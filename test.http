@@ -1,0 +1,51 @@
+### Test registration endpoint
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "registerNo": "22CSE1001",
+  "name": "Prakash",
+  "department": "CSE",
+  "college": "ABC University",
+  "email": "prakash@example.com",
+  "password": "mypassword"
+}
+
+### Test with another user
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "registerNo": "22CSE1002",
+  "name": "Arjun",
+  "department": "ECE",
+  "college": "XYZ University",
+  "email": "arjun@example.com",
+  "password": "password123"
+}
+
+### Test duplicate register number (should fail)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "registerNo": "22CSE1001",
+  "name": "Someone Else",
+  "department": "IT",
+  "college": "PQR University",
+  "email": "someone@example.com",
+  "password": "anotherpassword"
+}
+
+### Test duplicate email (should fail)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "registerNo": "22CSE1003",
+  "name": "Another Person",
+  "department": "IT",
+  "college": "LMN University",
+  "email": "prakash@example.com",
+  "password": "differentpassword"
+}
