@@ -25,6 +25,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Find user by email
     Optional<User> findByEmail(String email);
     
+    // Find user by either register number OR email (for login)
+    default Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
+        // First try to find by register number
+        Optional<User> userByRegisterNo = findByRegisterNo(usernameOrEmail);
+        if (userByRegisterNo.isPresent()) {
+            return userByRegisterNo;
+        }
+        // If not found, try to find by email
+        return findByEmail(usernameOrEmail);
+    }
+    
     // Check if register number already exists (for validation)
     boolean existsByRegisterNo(String registerNo);
     

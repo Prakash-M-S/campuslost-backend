@@ -24,6 +24,46 @@ Content-Type: application/json
   "password": "password123"
 }
 
+### LOGIN TESTS
+
+### Test login with register number
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "22CSE1001",
+  "password": "mypassword"
+}
+
+### Test login with email
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "prakash@example.com",
+  "password": "mypassword"
+}
+
+### Test login with wrong password (should fail)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "22CSE1001",
+  "password": "wrongpassword"
+}
+
+### Test login with non-existent user (should fail)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "nonexistent@example.com",
+  "password": "anypassword"
+}
+
+### DUPLICATE TESTS (should fail)
+
 ### Test duplicate register number (should fail)
 POST http://localhost:8080/api/auth/register
 Content-Type: application/json
