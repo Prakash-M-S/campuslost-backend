@@ -54,3 +54,9 @@ logs/
 # Secret keys (if you create separate files)
 application-secrets.properties
 jwt-secret.properties
+
+### AI/Development Generated Files ###
+# AI-generated documentation
+TODO.md
+TESTING_GUIDE.md
+*-generated.md
