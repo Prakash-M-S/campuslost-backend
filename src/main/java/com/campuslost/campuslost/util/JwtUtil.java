@@ -19,9 +19,11 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil {
 
-    // Secret key for signing tokens
-    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    
+    // Fixed secret key that doesn't change on restart
+    // In production, store this in environment variables or application.properties
+    private final String SECRET_STRING = "CampusLostSecretKeyForJWTTokens2025ThisIsAVeryLongSecretKeyThatShouldBeAtLeast256Bits";
+    private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_STRING.getBytes());
+
     // Token valid for 24 hours (in milliseconds)
     private final long JWT_EXPIRATION = 86400000;
 

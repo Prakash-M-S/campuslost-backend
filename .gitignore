@@ -31,3 +31,26 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Database Files ###
+# H2 Database files
+data/
+*.db
+*.mv.db
+*.trace.db
+*.lock.db
+
+### Application Logs ###
+# Spring Boot logs
+logs/
+*.log
+
+### Environment & Security ###
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Secret keys (if you create separate files)
+application-secrets.properties
+jwt-secret.properties

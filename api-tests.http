@@ -1,0 +1,90 @@
+### Test CampusLost API Endpoints
+
+### 1. Register a new user
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "registerNo": "22CSE1001",
+  "name": "John Smith",
+  "department": "CSE",
+  "college": "ABC University",
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### 2. Login with the user
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### 3. Get all items (no authentication required)
+GET http://localhost:8081/api/items
+
+### 4. Create a lost item (requires authentication)
+# First run the login request above to get the JWT token
+# Replace YOUR_JWT_TOKEN_HERE with the actual token from login response
+POST http://localhost:8081/api/items
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "title": "Lost Blue Wallet",
+  "description": "Leather wallet with student ID and credit cards",
+  "category": "Accessories",
+  "status": "LOST",
+  "location": "Library",
+  "contactInfo": "Call 9876543210"
+}
+
+### 5. Create a found item (requires authentication)
+POST http://localhost:8081/api/items
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "title": "Found iPhone 14",
+  "description": "Black iPhone with cracked screen",
+  "category": "Electronics",
+  "status": "FOUND",
+  "location": "Computer Lab",
+  "contactInfo": "WhatsApp: 9876543210"
+}
+
+### 6. Search items by keyword
+GET http://localhost:8081/api/items/search?keyword=wallet
+
+### 7. Filter items by status
+GET http://localhost:8081/api/items/status/LOST
+
+### 8. Get user's items (requires authentication)
+GET http://localhost:8081/api/items/my
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### 9. Advanced filtering
+GET http://localhost:8081/api/items/filter?status=LOST&category=Electronics&keyword=phone
+
+### 10. Get recent items
+GET http://localhost:8081/api/items/recent
+
+### 11. Update an item (requires authentication and ownership)
+PUT http://localhost:8081/api/items/1
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "title": "Lost Blue Wallet - UPDATED",
+  "description": "Leather wallet with student ID, credit cards, and driver's license",
+  "category": "Accessories",
+  "status": "LOST",
+  "location": "Library - 2nd Floor",
+  "contactInfo": "Call 9876543210 or email john@example.com"
+}
+
+### 12. Delete an item (requires authentication and ownership)
+DELETE http://localhost:8081/api/items/1
+Authorization: Bearer YOUR_JWT_TOKEN_HERE

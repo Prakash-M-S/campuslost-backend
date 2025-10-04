@@ -74,8 +74,9 @@ public class AuthController {
             // Call service to get JWT token
             String jwtToken = authService.login(request);
             
-            // Return JWT token (HTTP 200)
-            return ResponseEntity.ok("Bearer " + jwtToken);
+        // Return JWT token without Bearer prefix (HTTP 200)
+        // Frontend will add Bearer prefix when making requests
+        return ResponseEntity.ok(jwtToken);
             
         } catch (RuntimeException e) {
             // If login fails (user not found, wrong password, etc.)
