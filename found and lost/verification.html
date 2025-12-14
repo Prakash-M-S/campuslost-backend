@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Verify Claim - CampusLost</title>
+  <style>
+    body{font-family:Inter,system-ui;padding:2rem;background:#fff}
+    .card{max-width:540px;margin:0 auto;padding:1.25rem;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.06)}
+    input,button{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ddd}
+    button{cursor:pointer;background:#008040;color:#fff;border:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Owner Claim Verification</h2>
+    <p>Enter your Register No and the claim code given by the finder.</p>
+    <input id="vReg" placeholder="Register No" />
+    <input id="vCode" placeholder="Claim Code (from finder)" />
+    <button onclick="verify()">Verify Claim</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function getLostItems(){ return JSON.parse(localStorage.getItem('lostItems') || '[]'); }
+    function setLostItems(arr){ localStorage.setItem('lostItems', JSON.stringify(arr)); }
+
+    function verify(){
+      const reg = document.getElementById('vReg').value.trim();
+      const code = document.getElementById('vCode').value.trim();
+      const res = document.getElementById('result');
+      res.innerHTML = '';
+
+      if(!reg || !code){ alert('Enter Register No and Code.'); return; }
+
+      const lost = getLostItems();
+      const idx = lost.findIndex(x => x.regNo && x.regNo.toLowerCase() === reg.toLowerCase());
+      if(idx === -1){
+        res.innerHTML = `<p style="color:orange">No lost report for Register No ${escapeHtml(reg)}.</p>`;
+        return;
+      }
+      const rec = lost[idx];
+      if(!rec.claimCode){
+        res.innerHTML = `<p style="color:orange">No claim code was generated for this lost item yet. Check later.</p>`;
+        return;
+      }
+      if(rec.claimCode === code){
+        // mark claimed
+        rec.claimed = true;
+        rec.claimedAt = new Date().toISOString();
+        setLostItems(lost);
+        res.innerHTML = `<p style="color:green"><strong>Verified!</strong> Show the finder a matching ID and then mark item as received. Claim recorded.</p>
+                         <pre>Finder notes id: ${escapeHtml(rec.foundRecordId || 'N/A')}</pre>`;
+      } else {
+        res.innerHTML = `<p style="color:red">Claim code incorrect. Please check the code given by the finder.</p>`;
+      }
+    }
+
+    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  </script>
+</body>
+</html>

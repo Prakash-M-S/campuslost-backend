@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verify Lost Item Claim</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #008040;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #006030;
+    }
+    .message {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 5px;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .warning {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    pre {
+      background: #eee;
+      padding: 10px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Verify Claim</h2>
+    <p>Enter your Register Number and the Claim Code given by the finder.</p>
+    <input id="regNo" placeholder="Register Number" />
+    <input id="claimCode" placeholder="Claim Code" />
+    <button onclick="verifyClaim()">Verify Claim</button>
+
+    <div id="result" class="message"></div>
+  </div>
+
+  <script>
+    // 🔧 Sample lost items preloaded into localStorage
+    const sampleItems = [
+      {
+        regNo: "21BCS1234",
+        item: "Water Bottle",
+        claimCode: "WTR123",
+        foundRecordId: "FIND001",
+        claimed: false
+      },
+      {
+        regNo: "22BCA5678",
+        item: "ID Card",
+        claimCode: "IDC456",
+        foundRecordId: "FIND002",
+        claimed: false
+      }
+    ];
+
+    // Only preload sample data if not already stored
+    if (!localStorage.getItem('lostItems')) {
+      localStorage.setItem('lostItems', JSON.stringify(sampleItems));
+    }
+
+    function getLostItems() {
+      return JSON.parse(localStorage.getItem('lostItems') || '[]');
+    }
+
+    function setLostItems(data) {
+      localStorage.setItem('lostItems', JSON.stringify(data));
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char]));
+    }
+
+    function verifyClaim() {
+      const regNoInput = document.getElementById('regNo').value.trim();
+      const claimCodeInput = document.getElementById('claimCode').value.trim();
+      const result = document.getElementById('result');
+      result.innerHTML = '';
+      result.className = 'message';
+
+      if (!regNoInput || !claimCodeInput) {
+        result.textContent = 'Please enter both Register Number and Claim Code.';
+        result.classList.add('warning');
+        return;
+      }
+
+      const lostItems = getLostItems();
+      const index = lostItems.findIndex(
+        item => item.regNo.toLowerCase() === regNoInput.toLowerCase()
+      );
+
+      if (index === -1) {
+        result.innerHTML = `No lost item reported for Register No <strong>${escapeHtml(regNoInput)}</strong>.`;
+        result.classList.add('error');
+        return;
+      }
+
+      const item = lostItems[index];
+
+      if (!item.claimCode) {
+        result.textContent = 'No claim code has been set for this item yet. Please check back later.';
+        result.classList.add('warning');
+        return;
+      }
+
+      if (item.claimCode === claimCodeInput) {
+        // Mark as claimed
+        item.claimed = true;
+        item.claimedAt = new Date().toISOString();
+        setLostItems(lostItems);
+
+        result.innerHTML = `
+          ✅ <strong>Claim verified!</strong><br>
+          Please show your ID to the finder.<br><br>
+          <pre>Finder Record ID: ${escapeHtml(item.foundRecordId || 'N/A')}</pre>
+        `;
+        result.classList.add('success');
+      } else {
+        result.textContent = '❌ Claim Code is incorrect. Please try again.';
+        result.classList.add('error');
+      }
+    }
+  </script>
+</body>
+</html>

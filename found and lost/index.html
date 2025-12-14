@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusLost - Lost & Found Tracker</title>
+  <style>
+    :root {
+      --primary: #004080;
+      --secondary: #ffcc00;
+      --light: rgba(249, 249, 249, 0.9);
+      --dark: #333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+    body { 
+      min-height: 100vh; 
+      display: flex; 
+      justify-content: center;
+      align-items: center;
+      background: url("Frontview 2023.jpg") no-repeat center center fixed;  
+      background-size: cover;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      z-index: -1;
+    }
+
+    .card {
+      background: var(--light);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      width: 350px;
+      text-align: center;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    h1 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.9rem;
+      margin-top: 0.8rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .login-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    .login-btn:hover {
+      background: #002b5c;
+    }
+
+    .signup-btn {
+      background: var(--secondary);
+      color: black;
+    }
+
+    .signup-btn:hover {
+      background: #e6b800;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--dark);
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Professional Toast Notifications */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .toast {
+      background: white;
+      padding: 1rem 1.5rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border-left: 4px solid;
+      min-width: 300px;
+      transform: translateX(400px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-left-color: #28a745;
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    }
+
+    .toast.error {
+      border-left-color: #dc3545;
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    }
+
+    .toast.warning {
+      border-left-color: #ffc107;
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    }
+
+    .toast-header {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast-body {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .toast-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #666;
+      width: auto;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Hide other sections until login/signup */
+    #registerSection, #mainApp { display: none; }
+  </style>
+</head>
+<body>
+  <!-- Login Card -->
+  <div class="card" id="loginSection">
+    <h1>CampusLost</h1>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button class="login-btn" onclick="login()">Login</button>
+    <p style="margin:1rem 0;">Don't have an account?</p>
+    <button class="signup-btn" onclick="showRegister()">Create Account</button>
+  </div>
+
+  <!-- Register Card -->
+  <div class="card" id="registerSection">
+    <h1>Create Account</h1>
+    <input type="text" id="regNo" placeholder="Register No" required>
+    <input type="text" id="regName" placeholder="Full Name" required>
+    <input type="text" id="regDept" placeholder="Department" required>
+    <input type="text" id="regCollege" placeholder="College" required>
+    <input type="email" id="regEmail" placeholder="Email" required>
+    <input type="password" id="regPassword" placeholder="Password" required>
+    <button class="signup-btn" onclick="register()">Sign Up</button>
+    <p style="margin:1rem 0;">Already have an account?</p>
+    <button class="login-btn" onclick="showLogin()">Back to Login</button>
+  </div>
+
+  <!-- After Login - Main App -->
+  <div id="mainApp">
+    <header style="background:var(--primary);color:white;padding:1rem;text-align:center;">
+      <h2>📌 CampusLost Dashboard</h2>
+      <button onclick="logout()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:0.5rem 1rem;border-radius:5px;cursor:pointer;float:right;margin-top:-5px;">Logout</button>
+    </header>
+    <main style="padding:1.5rem;">
+      <h3>Welcome to CampusLost!</h3>
+      <p>This is your lost & found portal. You can post lost/found items here.</p>
+
+      <!-- Simple Navigation Links for Testing -->
+      <div style="margin-top:2rem;">
+        <h4>Test Pages:</h4>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+          <a href="post-item.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Post Lost Item</a>
+          <a href="items.html" style="background:var(--secondary);color:black;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Report Found Item</a>
+          <a href="all-items.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">View All Items</a>
+          <a href="verification.html" style="background:var(--secondary);color:black;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Verify Claim</a>
+          <a href="index2.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Dashboard 2</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    © 2025 CampusLost | Built with ❤️ for students
+  </footer>
+
+  <script>
+    const API_BASE = 'http://localhost:8081';
+
+    function showRegister() {
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("registerSection").style.display = "block";
+    }
+
+    function showLogin() {
+      document.getElementById("registerSection").style.display = "none";
+      document.getElementById("loginSection").style.display = "block";
+    }
+
+    async function login() {
+      let email = document.getElementById("loginEmail").value;
+      let password = document.getElementById("loginPassword").value;
+
+      if (!email || !password) {
+        showToast('error', "Please enter Email and Password.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            usernameOrEmail: email,
+            password: password
+          })
+        });
+
+        const data = await response.text();
+
+        if (response.ok) {
+          // Login successful - store JWT token (clean token without Bearer prefix)
+          localStorage.setItem('authToken', data);
+          localStorage.setItem('userEmail', email);
+
+          showToast('success', "Login Successful! Welcome to CampusLost.");
+
+          // Hide login section and show main app
+          document.getElementById("loginSection").style.display = "none";
+          document.getElementById("mainApp").style.display = "block";
+        } else {
+          showToast('error', "Login failed: " + (data || 'Please check your credentials.'));
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        showToast('error', "Network error. Please try again.");
+      }
+    }
+
+    async function register() {
+      let regNo = document.getElementById("regNo").value;
+      let name = document.getElementById("regName").value;
+      let dept = document.getElementById("regDept").value;
+      let college = document.getElementById("regCollege").value;
+      let email = document.getElementById("regEmail").value;
+      let password = document.getElementById("regPassword").value;
+
+      if (!regNo || !name || !dept || !college || !email || !password) {
+        showToast('error', "Please fill all required fields.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            registerNo: regNo,
+            name: name,
+            department: dept,
+            college: college,
+            email: email,
+            password: password
+          })
+        });
+
+        const data = await response.text();
+
+        if (response.ok) {
+          showToast('success', "Registration Successful! You can login now.");
+          showLogin();
+          // Clear form
+          document.getElementById("regNo").value = "";
+          document.getElementById("regName").value = "";
+          document.getElementById("regDept").value = "";
+          document.getElementById("regCollege").value = "";
+          document.getElementById("regEmail").value = "";
+          document.getElementById("regPassword").value = "";
+        } else {
+          showToast('error', "Registration failed: " + (data || 'Please try again.'));
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        showToast('error', "Network error. Please try again.");
+      }
+    }
+
+    // Check if user is already logged in when page loads
+    window.addEventListener('DOMContentLoaded', async function() {
+      const authToken = localStorage.getItem('authToken');
+      if (authToken) {
+        // Validate token with backend before showing dashboard
+        try {
+          const response = await fetch(`${API_BASE}/api/auth/profile`, {
+            headers: {
+              'Authorization': `Bearer ${authToken}`
+            }
+          });
+
+          if (response.ok) {
+            // Token is valid, show main app
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+          } else {
+            // Token is invalid, clear it and show login
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userEmail');
+            document.getElementById("loginSection").style.display = "block";
+            document.getElementById("mainApp").style.display = "none";
+          }
+        } catch (error) {
+          // Network error or invalid token, clear and show login
+          console.log('Token validation failed:', error);
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('userEmail');
+          document.getElementById("loginSection").style.display = "block";
+          document.getElementById("mainApp").style.display = "none";
+          showToast('warning', 'Session expired. Please login again.');
+        }
+      } else {
+        // No token, show login
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("mainApp").style.display = "none";
+      }
+    });
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userEmail');
+      document.getElementById("mainApp").style.display = "none";
+      document.getElementById("loginSection").style.display = "block";
+      showToast('success', "Logged out successfully!");
+    }
+
+    // Toast notification function
+    function showToast(type, message) {
+      const toastContainer = document.querySelector('.toast-container') || createToastContainer();
+      const toast = document.createElement('div');
+      toast.className = `toast ${type} show`;
+      toast.innerHTML = `
+        <div class="toast-header">
+          <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+          <button type="button" class="btn-close" aria-label="Close" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+        <div class="toast-body">
+          ${message}
+        </div>
+      `;
+      toastContainer.appendChild(toast);
+
+      // Auto-remove toast after 5 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => { toast.remove(); }, 300);
+      }, 5000);
+    }
+
+    // Create toast container if it doesn't exist
+    function createToastContainer() {
+      const container = document.createElement('div');
+      container.className = 'toast-container';
+      document.body.appendChild(container);
+      return container;
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
+

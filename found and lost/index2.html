@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusLost - Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    :root {
+      --primary: #004080;
+      --secondary: #ffcc00;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-shadow: rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url("Frontview 2023.jpg") no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.5); /* semi-transparent overlay */
+      z-index: -1;
+    }
+
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .dashboard-header {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 1.5rem 1rem;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px var(--card-shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px var(--card-shadow);
+    }
+
+    .card i {
+      font-size: 1.5rem;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--primary);
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+  <div class="dashboard-header">CampusLost Dashboard</div>
+
+  <a href="lost.html" class="card">
+    <i class="fas fa-search"></i> Lost Items
+  </a>
+
+  <a href="items.html" class="card">
+    <i class="fas fa-check-circle"></i> Found Items
+  </a>
+
+  <a href="post-item.html" class="card">
+    <i class="fas fa-plus-circle"></i> Post Item
+  </a>
+
+  <a href="chat.html" class="card">
+    <i class="fas fa-comments"></i> Chat / Messages
+  </a>
+</div>
+
+<footer>
+  © 2025 CampusLost | Built with ❤️ for students
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Items - CampusLost</title>
+    <style>
+        body {
+            font-family: Inter, system-ui;
+            margin: 0;
+            padding: 2rem;
+            background: #f5f8ff;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .search-bar button {
+            padding: 0.8rem 1.5rem;
+            background: #004080;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .filters {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .filters select, .filters button {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .item-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #004080;
+        }
+        .item-card.found {
+            border-left-color: #28a745;
+        }
+        .item-card.lost {
+            border-left-color: #dc3545;
+        }
+        .item-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .item-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .item-status.found {
+            background: #d4edda;
+            color: #155724;
+        }
+        .item-status.lost {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .item-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        .item-meta {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        .nav-links {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .nav-links a {
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            background: #004080;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CampusLost - All Items</h1>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="post-item.html">Post Lost Item</a>
+            <a href="items.html">Report Found Item</a>
+            <a href="verification.html">Verify Claim</a>
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search items...">
+        <button onclick="searchItems()">Search</button>
+    </div>
+
+    <div class="filters">
+        <select id="statusFilter">
+            <option value="">All Status</option>
+            <option value="LOST">Lost Only</option>
+            <option value="FOUND">Found Only</option>
+        </select>
+        <select id="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="Documents">Documents</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Books">Books</option>
+            <option value="Other">Other</option>
+        </select>
+        <button onclick="applyFilters()">Apply Filters</button>
+        <button onclick="clearFilters()">Clear</button>
+    </div>
+
+    <div id="loading" class="loading">Loading items...</div>
+    <div id="itemsGrid" class="items-grid"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:8081';
+        let allItems = [];
+
+        // Helper function to get auth token
+        function getAuthToken() {
+            return localStorage.getItem('authToken');
+        }
+
+        // Helper function to check if user is authenticated
+        function isAuthenticated() {
+            return !!getAuthToken();
+        }
+
+        async function loadItems() {
+            try {
+                const authToken = getAuthToken();
+                const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+                const response = await fetch(`${API_BASE}/api/items`, {
+                    headers: headers
+                });
+
+                if (response.ok) {
+                    allItems = await response.json();
+                    displayItems(allItems);
+                } else {
+                    throw new Error('Failed to load items');
+                }
+            } catch (error) {
+                console.error('Error loading items:', error);
+                document.getElementById('loading').innerHTML = 'Error loading items. Please check if you are logged in and try again.';
+            }
+        }
+
+        function displayItems(items) {
+            const loading = document.getElementById('loading');
+            const grid = document.getElementById('itemsGrid');
+
+            loading.style.display = 'none';
+
+            if (items.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; grid-column: 1/-1; padding: 2rem; color: #666;">No items found.</div>';
+                return;
+            }
+
+            grid.innerHTML = items.map(item => `
+                <div class="item-card ${item.status.toLowerCase()}">
+                    <div class="item-status ${item.status.toLowerCase()}">${item.status}</div>
+                    <div class="item-title">${item.title}</div>
+                    <div class="item-description">${item.description}</div>
+                    <div class="item-meta">
+                        <div><strong>Category:</strong> ${item.category}</div>
+                        <div><strong>Location:</strong> ${item.location}</div>
+                        <div><strong>Posted:</strong> ${new Date(item.datePosted).toLocaleDateString()}</div>
+                        ${item.contactInfo ? `<div><strong>Contact:</strong> ${item.contactInfo}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchItems() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allItems.filter(item =>
+                item.title.toLowerCase().includes(searchTerm) ||
+                item.description.toLowerCase().includes(searchTerm) ||
+                item.category.toLowerCase().includes(searchTerm)
+            );
+            displayItems(filtered);
+        }
+
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.trim();
+
+            // Use backend API for filtering instead of client-side filtering
+            let url = `${API_BASE}/api/items`;
+            const params = new URLSearchParams();
+
+            if (statusFilter) params.append('status', statusFilter);
+            if (categoryFilter) params.append('category', categoryFilter);
+            if (searchTerm) params.append('keyword', searchTerm);
+
+            if (params.toString()) {
+                url += `/filter?${params.toString()}`;
+            }
+
+            loadFilteredItems(url);
+        }
+
+        async function loadFilteredItems(url) {
+            try {
+                const authToken = getAuthToken();
+                const headers = authToken ? { 'Authorization': `Bearer ${authToken}` } : {};
+
+                const response = await fetch(url, { headers });
+
+                if (response.ok) {
+                    const filteredItems = await response.json();
+                    displayItems(filteredItems);
+                } else {
+                    throw new Error('Failed to filter items');
+                }
+            } catch (error) {
+                console.error('Error filtering items:', error);
+                document.getElementById('loading').innerHTML = 'Error filtering items. Please try again.';
+            }
+        }
+
+        // Load items when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            loadItems();
+        });
+
+        // Add enter key support for search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchItems();
+            }
+        });
+    </script>
+</body>
+</html>
