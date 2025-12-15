@@ -105,9 +105,9 @@
 
           // Check if user is authenticated
           if (!isAuthenticated()) {
-            showToast('Please login first to post items!', 'error');
-            return;
-          }
+              showToast('Please login first to post items!', 'error');
+              return;
+            }
 
           const itemData = {
             title: title,
@@ -170,9 +170,9 @@
         // Check authentication on page load
         window.addEventListener('DOMContentLoaded', function() {
           if (!isAuthenticated()) {
-            document.getElementById('msg').innerHTML = 'Please <a href="index.html">login</a> first to post items!';
-            document.getElementById('msg').style.color = 'orange';
-          }
+              document.getElementById('msg').innerHTML = 'Please <a href="auth.html">login</a> first to post items!';
+              document.getElementById('msg').style.color = 'orange';
+            }
         });
       </script>
 </body>

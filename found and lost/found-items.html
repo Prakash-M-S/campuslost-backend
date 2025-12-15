@@ -105,7 +105,7 @@
 
       // Check if user is authenticated
       if (!isAuthenticated()) {
-        document.getElementById('output').innerHTML = '<div style="color:red;">Please <a href="index.html">login</a> first to report found items!</div>';
+        document.getElementById('output').innerHTML = '<div style="color:red;">Please <a href="auth.html">login</a> first to report found items!</div>';
         return;
       }
 
@@ -174,7 +174,7 @@
     // Check authentication on page load
     window.addEventListener('DOMContentLoaded', function() {
       if (!isAuthenticated()) {
-        document.getElementById('output').innerHTML = '<div style="color:orange;">Please <a href="index.html">login</a> first to report found items!</div>';
+        document.getElementById('output').innerHTML = '<div style="color:orange;">Please <a href="auth.html">login</a> first to report found items!</div>';
       }
     });
   </script>

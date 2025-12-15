@@ -6,97 +6,383 @@
   <title>CampusLost - Lost & Found Tracker</title>
   <style>
     :root {
-      --primary: #004080;
-      --secondary: #ffcc00;
-      --light: rgba(249, 249, 249, 0.9);
-      --dark: #333;
+      /* Brand + accent palette */
+      --primary: #2155ff;
+      --primary-dark: #1230a3;
+      --accent: #ffb347;
+      --accent-dark: #e09330;
+      --surface: rgba(17, 25, 40, 0.85);
+      --surface-light: rgba(255, 255, 255, 0.08);
+      --border-subtle: rgba(255, 255, 255, 0.18);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --error: #f97373;
+      --radius-card: 20px;
+      --radius-input: 12px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.55);
+      --transition-fast: 180ms ease-out;
+      --transition-med: 260ms ease;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    }
 
-    body { 
-      min-height: 100vh; 
-      display: flex; 
+    body {
+      min-height: 100vh;
+      display: flex;
       justify-content: center;
       align-items: center;
-      background: url("Frontview 2023.jpg") no-repeat center center fixed;  
-      background-size: cover;
+      padding: 1.5rem;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.4), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(244, 114, 182, 0.35), transparent 55%),
+        radial-gradient(circle at top right, rgba(56, 189, 248, 0.3), transparent 55%),
+        #020617;
+      overflow-x: hidden;
     }
 
+    /* Soft blurred glow behind the auth card */
     body::before {
       content: "";
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(255, 255, 255, 0.75);
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.25), transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(244, 114, 182, 0.25), transparent 55%);
+      filter: blur(48px);
+      opacity: 0.85;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* Subtle tech/grid pattern overlay */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(
+          rgba(15, 23, 42, 0.75),
+          rgba(15, 23, 42, 0.9)
+        ),
+        linear-gradient(
+          120deg,
+          rgba(148, 163, 184, 0.16) 0%,
+          transparent 40%,
+          transparent 60%,
+          rgba(148, 163, 184, 0.16) 100%
+        ),
+        repeating-linear-gradient(
+          to right,
+          rgba(30, 64, 175, 0.22) 0,
+          rgba(30, 64, 175, 0.22) 1px,
+          transparent 1px,
+          transparent 26px
+        ),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(30, 64, 175, 0.16) 0,
+          rgba(30, 64, 175, 0.16) 1px,
+          transparent 1px,
+          transparent 26px
+        );
+      mix-blend-mode: soft-light;
+      opacity: 0.3;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Glassmorphism auth card */
+    .card {
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.95),
+        rgba(15, 23, 42, 0.85)
+      );
+      border-radius: var(--radius-card);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      width: 360px;
+      max-width: 100%;
+      padding: 2.4rem 2.2rem 2.2rem;
+      text-align: left;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      position: relative;
+      overflow: hidden;
+      animation: cardEntrance 420ms var(--transition-med);
+    }
+
+    /* Subtle gradient border glow on card edges */
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.7),
+        rgba(244, 114, 182, 0.35),
+        rgba(56, 189, 248, 0.5)
+      );
+      opacity: 0;
+      transition: opacity var(--transition-med);
       z-index: -1;
     }
 
-    .card {
-      background: var(--light);
-      padding: 2rem;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      width: 350px;
-      text-align: center;
-      animation: fadeIn 0.4s ease-in-out;
+    .card:hover::before {
+      opacity: 0.35;
     }
 
+    /* Brand + headings */
     h1 {
-      color: var(--primary);
-      margin-bottom: 1.5rem;
+      color: #e5e7eb;
+      margin-bottom: 0.25rem;
+      font-size: 1.5rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .brand-tagline {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 1.6rem;
+    }
+
+    .auth-header {
+      margin-bottom: 1.2rem;
+    }
+
+    .auth-title {
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: #f9fafb;
+      margin-bottom: 0.35rem;
+    }
+
+    .auth-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 20rem;
+    }
+
+    /* Layout spacing between form controls */
+    #loginSection input:first-of-type,
+    #registerSection input:first-of-type {
+      margin-top: 1.1rem;
     }
 
     input {
       width: 100%;
-      padding: 0.8rem;
+      padding: 0.9rem 0.95rem;
       margin: 0.5rem 0;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 1rem;
+      border-radius: var(--radius-input);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 0.96rem;
+      outline: none;
+      transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background-color var(--transition-fast),
+        transform var(--transition-fast);
+    }
+
+    input::placeholder {
+      color: rgba(148, 163, 184, 0.8);
+      font-size: 0.9rem;
+    }
+
+    input:focus-visible {
+      border-color: rgba(96, 165, 250, 0.85);
+      box-shadow:
+        0 0 0 1px rgba(59, 130, 246, 0.75),
+        0 10px 30px rgba(37, 99, 235, 0.35);
+      background: rgba(15, 23, 42, 0.96);
+      transform: translateY(-1px);
+    }
+
+    input:hover {
+      border-color: rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    /* Optional inline field icons using background SVGs */
+    #loginEmail,
+    #regEmail {
+      padding-left: 2.4rem;
+      background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='3' y='5' width='18' height='14' rx='2' ry='2' stroke='%239ca3af' stroke-width='1.6'/%3E%3Cpath d='M5 7l7 5 7-5' stroke='%239ca3af' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 0.75rem center;
+      background-size: 18px;
+    }
+
+    #loginPassword,
+    #regPassword {
+      padding-left: 2.4rem;
+      background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='4.5' y='10' width='15' height='9' rx='2' ry='2' stroke='%239ca3af' stroke-width='1.6'/%3E%3Cpath d='M9 10V8a3 3 0 016 0v2' stroke='%239ca3af' stroke-width='1.6' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='14.5' r='1.2' fill='%239ca3af'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 0.75rem center;
+      background-size: 18px;
     }
 
     button {
       width: 100%;
-      padding: 0.9rem;
-      margin-top: 0.8rem;
+      padding: 0.9rem 1rem;
+      margin-top: 0.9rem;
       border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 1rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.98rem;
       cursor: pointer;
-      transition: 0.3s;
+      letter-spacing: 0.03em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition:
+        background var(--transition-med),
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        filter var(--transition-fast);
+    }
+
+    button:focus-visible {
+      outline: 2px solid rgba(248, 250, 252, 0.9);
+      outline-offset: 3px;
     }
 
     .login-btn {
-      background: var(--primary);
-      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #f9fafb;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
     }
 
     .login-btn:hover {
-      background: #002b5c;
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .login-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 9px 22px rgba(37, 99, 235, 0.5);
     }
 
     .signup-btn {
-      background: var(--secondary);
-      color: black;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #111827;
+      box-shadow: 0 12px 26px rgba(234, 179, 8, 0.45);
     }
 
     .signup-btn:hover {
-      background: #e6b800;
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+      box-shadow: 0 16px 34px rgba(234, 179, 8, 0.6);
+    }
+
+    .signup-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 9px 20px rgba(234, 179, 8, 0.5);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1rem 0 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: radial-gradient(circle, rgba(148, 163, 184, 0.6), transparent 70%);
+      opacity: 0.6;
+    }
+
+    .helper-text {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .helper-link {
+      color: #bfdbfe;
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+    }
+
+    .helper-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 1px;
+      background: linear-gradient(to right, rgba(191, 219, 254, 0.1), rgba(191, 219, 254, 0.9));
+      transform-origin: center;
+      transform: scaleX(0);
+      transition: transform var(--transition-fast);
+    }
+
+    .helper-link:hover::after {
+      transform: scaleX(1);
     }
 
     footer {
       position: fixed;
-      bottom: 10px;
-      width: 100%;
+      bottom: 14px;
+      left: 0;
+      right: 0;
       text-align: center;
-      font-size: 0.85rem;
-      color: var(--dark);
+      font-size: 0.82rem;
+      color: rgba(209, 213, 219, 0.9);
+      text-shadow: 0 1px 3px rgba(15, 23, 42, 0.9);
+      pointer-events: none;
     }
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(20px);}
-      to {opacity: 1; transform: translateY(0);}
+    @keyframes cardEntrance {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 480px) {
+      body {
+        padding: 1.25rem;
+      }
+
+      .card {
+        padding: 2rem 1.6rem 1.9rem;
+        width: 100%;
+      }
+
+      .auth-title {
+        font-size: 1.28rem;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
     }
 
     /* Professional Toast Notifications */
@@ -175,24 +461,48 @@
   <!-- Login Card -->
   <div class="card" id="loginSection">
     <h1>CampusLost</h1>
-    <input type="email" id="loginEmail" placeholder="Email">
+    <p class="brand-tagline">Smart campus lost &amp; found</p>
+
+    <div class="auth-header">
+      <h2 class="auth-title">Welcome 👋 Let’s get started</h2>
+      <p class="auth-subtitle">Sign in to access your CampusLost dashboard and manage lost &amp; found items.</p>
+    </div>
+
+    <input type="email" id="loginEmail" placeholder="Email address">
     <input type="password" id="loginPassword" placeholder="Password">
+
     <button class="login-btn" onclick="login()">Login</button>
-    <p style="margin:1rem 0;">Don't have an account?</p>
+
+    <p class="helper-text">Forgot your password? <span class="helper-link" tabindex="0">Contact your campus admin</span></p>
+
+    <div class="divider"><span>or</span></div>
+
+    <p class="helper-text">Don’t have an account yet?</p>
     <button class="signup-btn" onclick="showRegister()">Create Account</button>
   </div>
 
   <!-- Register Card -->
   <div class="card" id="registerSection">
-    <h1>Create Account</h1>
+    <h1>CampusLost</h1>
+    <p class="brand-tagline">Smart campus lost &amp; found</p>
+
+    <div class="auth-header">
+      <h2 class="auth-title">Create your account</h2>
+      <p class="auth-subtitle">Join CampusLost so you can quickly report, track, and recover items on campus.</p>
+    </div>
+
     <input type="text" id="regNo" placeholder="Register No" required>
     <input type="text" id="regName" placeholder="Full Name" required>
     <input type="text" id="regDept" placeholder="Department" required>
     <input type="text" id="regCollege" placeholder="College" required>
     <input type="email" id="regEmail" placeholder="Email" required>
     <input type="password" id="regPassword" placeholder="Password" required>
+
     <button class="signup-btn" onclick="register()">Sign Up</button>
-    <p style="margin:1rem 0;">Already have an account?</p>
+
+    <div class="divider"><span>or</span></div>
+
+    <p class="helper-text">Already using CampusLost?</p>
     <button class="login-btn" onclick="showLogin()">Back to Login</button>
   </div>
 
@@ -211,10 +521,10 @@
         <h4>Test Pages:</h4>
         <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
           <a href="post-item.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Post Lost Item</a>
-          <a href="items.html" style="background:var(--secondary);color:black;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Report Found Item</a>
+          <a href="found-items.html" style="background:var(--secondary);color:black;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Report Found Item</a>
           <a href="all-items.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">View All Items</a>
-          <a href="verification.html" style="background:var(--secondary);color:black;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Verify Claim</a>
-          <a href="index2.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Dashboard 2</a>
+          <a href="verify-claim.html" style="background:var(--secondary);color:black;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Verify Claim</a>
+          <a href="dashboard.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Dashboard 2</a>
         </div>
       </div>
     </main>
