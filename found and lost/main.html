@@ -4,70 +4,224 @@
   <meta charset="UTF-8">
   <title>Verify Lost Item Claim</title>
   <style>
+    :root {
+      --primary: #2155ff;
+      --primary-dark: #1230a3;
+      --accent: #ffb347;
+      --accent-dark: #e09330;
+      --surface: rgba(17, 25, 40, 0.85);
+      --surface-light: rgba(255, 255, 255, 0.08);
+      --border-subtle: rgba(255, 255, 255, 0.18);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --radius-card: 20px;
+      --radius-input: 12px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.55);
+      --transition-fast: 180ms ease-out;
+      --transition-med: 260ms ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2.5rem 1.5rem;
+      color: var(--text-main);
+      background: #020617;
+      position: relative;
+      overflow-x: hidden;
     }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("bg1.jpg");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      filter: blur(7px) brightness(0.85);
+      transform: scale(1.04);
+      z-index: -2;
     }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(59, 130, 246, 0.25), transparent 45%),
+        radial-gradient(circle at 82% 78%, rgba(244, 114, 182, 0.22), transparent 42%),
+        linear-gradient(120deg, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.92)),
+        repeating-linear-gradient(to right, rgba(59, 130, 246, 0.18) 0, rgba(59, 130, 246, 0.18) 1px, transparent 1px, transparent 28px),
+        repeating-linear-gradient(to bottom, rgba(59, 130, 246, 0.12) 0, rgba(59, 130, 246, 0.12) 1px, transparent 1px, transparent 28px);
+      mix-blend-mode: soft-light;
+      opacity: 0.55;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85));
+      border-radius: var(--radius-card);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      width: min(520px, 96vw);
+      padding: 2.1rem 2rem;
+      text-align: left;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      position: relative;
+      overflow: hidden;
+      animation: cardEntrance 420ms var(--transition-med);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.7), rgba(244, 114, 182, 0.35), rgba(56, 189, 248, 0.5));
+      opacity: 0;
+      transition: opacity var(--transition-med);
+      z-index: -1;
+    }
+
+    .card:hover::before { opacity: 0.35; }
+
     h2 {
-      text-align: center;
+      color: #e5e7eb;
+      font-size: 1.35rem;
+      margin-bottom: 0.35rem;
     }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .brand h1 {
+      color: #e5e7eb;
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-tagline {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
     input, button {
       width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      padding: 0.9rem 0.95rem;
+      margin: 0.5rem 0;
+      border-radius: var(--radius-input);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 0.96rem;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
       box-sizing: border-box;
     }
+
+    input::placeholder { color: rgba(148, 163, 184, 0.8); }
+
+    input:focus-visible {
+      border-color: rgba(96, 165, 250, 0.85);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.75), 0 10px 30px rgba(37, 99, 235, 0.35);
+      background: rgba(15, 23, 42, 0.96);
+      transform: translateY(-1px);
+    }
+
     button {
-      background-color: #008040;
-      color: white;
+      margin-top: 0.9rem;
       border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.98rem;
       cursor: pointer;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: background var(--transition-med), transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
     }
-    button:hover {
-      background-color: #006030;
+
+    button:focus-visible {
+      outline: 2px solid rgba(248, 250, 252, 0.9);
+      outline-offset: 3px;
     }
+
+    .login-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #f9fafb;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .login-btn:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .login-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 9px 22px rgba(37, 99, 235, 0.5);
+    }
+
     .message {
       margin-top: 1rem;
       padding: 1rem;
-      border-radius: 5px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: #e5e7eb;
     }
-    .success {
-      background-color: #d4edda;
-      color: #155724;
-    }
-    .error {
-      background-color: #f8d7da;
-      color: #721c24;
-    }
-    .warning {
-      background-color: #fff3cd;
-      color: #856404;
-    }
+    .success { background: rgba(34, 197, 94, 0.12); color: #d1fae5; border-color: rgba(34, 197, 94, 0.35); }
+    .error { background: rgba(248, 113, 113, 0.12); color: #fecdd3; border-color: rgba(248, 113, 113, 0.35); }
+    .warning { background: rgba(234, 179, 8, 0.12); color: #fef9c3; border-color: rgba(234, 179, 8, 0.35); }
+
     pre {
-      background: #eee;
+      background: rgba(15, 23, 42, 0.8);
       padding: 10px;
       overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: #e5e7eb;
+    }
+
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 1.5rem 1rem; }
+      .card { padding: 1.7rem 1.35rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="card">
+    <div class="brand">
+      <h1>CampusLost</h1>
+      <p class="brand-tagline">Smart campus lost &amp; found</p>
+    </div>
     <h2>Verify Claim</h2>
-    <p>Enter your Register Number and the Claim Code given by the finder.</p>
+    <p style="color: var(--text-muted); margin-bottom: 0.75rem;">Enter your Register Number and the claim code given by the finder.</p>
     <input id="regNo" placeholder="Register Number" />
     <input id="claimCode" placeholder="Claim Code" />
-    <button onclick="verifyClaim()">Verify Claim</button>
+    <button class="login-btn" onclick="verifyClaim()">Verify Claim</button>
 
     <div id="result" class="message"></div>
   </div>
