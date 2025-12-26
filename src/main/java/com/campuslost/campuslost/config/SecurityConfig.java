@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.campuslost.campuslost.filter.CorsFilter;
 import com.campuslost.campuslost.filter.JwtFilter;
 
 @Configuration
@@ -23,58 +27,48 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
     
-    /**
-     * Password Encoder Bean
-     * BCrypt is a strong hashing algorithm for passwords
-     * It automatically adds "salt" and is very secure
-     */
+    @Autowired
+    private CorsFilter corsFilter;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
     
-    /**
-     * Security Configuration - JWT Authentication
-     * 1. Allow registration and login without token
-     * 2. Require JWT token for all other endpoints
-     * 3. Add JWT filter to check tokens
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())  // Disable CSRF for API
+            .csrf(AbstractHttpConfigurer::disable)
             .headers(headers -> headers
-                .frameOptions(frameOptions -> frameOptions.sameOrigin())  // Allow H2 console
+                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
             )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // No sessions, use JWT
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/test").permitAll()  // Allow registration/login/test
-                .requestMatchers("/h2-console/**").permitAll()  // Allow H2 console
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow all OPTIONS requests (CORS preflight)
-                // Temporarily allow all GET requests to test
-                .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .anyRequest().authenticated()   // All other endpoints need JWT token
+                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/items/**").permitAll()
+                .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);  // Add JWT filter
-        
+            .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
-    /**
-     * CORS Configuration - Allow frontend to access backend APIs
-     */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*", "file://*")
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOriginPatterns("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(false);  // Disable credentials to allow broader origins
+                        .allowCredentials(true)
+                        .exposedHeaders("Authorization");
             }
         };
     }

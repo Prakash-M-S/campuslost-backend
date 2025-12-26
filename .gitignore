@@ -1,62 +1,55 @@
-HELP.md
+# Maven
 target/
-.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# H2 Database files
+/data/*.db
+/data/*.trace.db
+/data/*.mv.db
+*.db
+*.trace.db
 
-### IntelliJ IDEA ###
-.idea
+# IDE
+.idea/
 *.iws
 *.iml
 *.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
 .vscode/
 
-### Database Files ###
-# H2 Database files
-data/
-*.db
-*.mv.db
-*.trace.db
-*.lock.db
+# OS
+.DS_Store
+Thumbs.db
 
-### Application Logs ###
-# Spring Boot logs
-logs/
+# Logs
 *.log
+logs/
 
-### Environment & Security ###
-# Environment variables
-.env
-.env.local
-.env.production
+# Spring Boot
+*.jar
+*.war
+*.ear
 
-# Secret keys (if you create separate files)
-application-secrets.properties
-jwt-secret.properties
+# Node modules (if any)
+node_modules/
 
-### AI/Development Generated Files ###
-# AI-generated documentation
-TODO.md
-TESTING_GUIDE.md
-*-generated.md
+# Temporary files
+*.tmp
+*.temp
+
+# Build outputs
+build/
+out/
+
+# Java
+*.class
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar

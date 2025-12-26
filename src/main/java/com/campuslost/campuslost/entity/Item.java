@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "items")
-public class  Item {
+public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,13 +18,13 @@ public class  Item {
     private String description;
 
     @Column(nullable = false)
-    private String category; // Electronics, Documents, Clothing, Accessories, Others
+    private String category;
 
     @Column(nullable = false)
-    private String status; // LOST, FOUND, RESOLVED
+    private String status;
 
     @Column(nullable = false)
-    private String location; // Where item was lost/found
+    private String location;
 
     @Column(name = "date_posted", nullable = false)
     private LocalDateTime datePosted;
@@ -33,14 +33,12 @@ public class  Item {
     private String imageUrl;
 
     @Column(name = "contact_info")
-    private String contactInfo; // Additional contact info beyond user email
+    private String contactInfo;
 
-    // Relationship with User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Constructors
     public Item() {
         this.datePosted = LocalDateTime.now();
     }
