@@ -114,7 +114,7 @@
       content: "";
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background-image: url("bg1.jpg");
+      background-image: url("Frontview 2023.jpg");
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
@@ -496,6 +496,293 @@
 
     /* Hide other sections until login/signup */
     #registerSection, #mainApp { display: none; }
+
+    /* Dashboard Styles - Modern Vibrant Theme */
+    #mainApp {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    }
+
+    .dashboard-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.8rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dashboard-header h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .dashboard-main {
+      padding: 2.5rem;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+    }
+
+    .dashboard-welcome {
+      background: linear-gradient(135deg, rgba(118, 75, 162, 0.25), rgba(102, 126, 234, 0.2));
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-welcome::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+      50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+    }
+
+    .dashboard-welcome h3 {
+      color: #ffffff;
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .dashboard-welcome p {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard-nav {
+      margin-top: 2.5rem;
+    }
+
+    .dashboard-nav h4 {
+      color: #ffffff;
+      font-size: 1.4rem;
+      margin-bottom: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-card {
+      background: linear-gradient(135deg, rgba(118, 75, 162, 0.2), rgba(102, 126, 234, 0.15));
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      text-decoration: none;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+      transition: left 0.5s ease;
+    }
+
+    .nav-card:hover::before {
+      left: 100%;
+    }
+
+    .nav-card::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      background: linear-gradient(
+        135deg,
+        #667eea,
+        #764ba2,
+        #f093fb,
+        #667eea
+      );
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
+      filter: blur(8px);
+    }
+
+    .nav-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(102, 126, 234, 0.4);
+      border-color: rgba(255, 255, 255, 0.3);
+      background: linear-gradient(135deg, rgba(118, 75, 162, 0.35), rgba(102, 126, 234, 0.3));
+    }
+
+    .nav-card:hover::after {
+      opacity: 0.6;
+    }
+
+    .nav-card:nth-child(1) { border-top: 3px solid #f093fb; }
+    .nav-card:nth-child(2) { border-top: 3px solid #4facfe; }
+    .nav-card:nth-child(3) { border-top: 3px solid #43e97b; }
+    .nav-card:nth-child(4) { border-top: 3px solid #fa709a; }
+    .nav-card:nth-child(5) { border-top: 3px solid #fee140; }
+
+    .nav-card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0;
+      width: 100%;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-card-desc {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .nav-card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      transition: transform 0.3s ease;
+    }
+
+    .nav-card:hover .nav-card-icon {
+      transform: scale(1.15) rotate(5deg);
+    }
+
+    /* Responsive dashboard */
+    @media (max-width: 768px) {
+      .dashboard-header {
+        padding: 1.5rem 1.8rem;
+        flex-direction: column;
+        gap: 1.2rem;
+        align-items: flex-start;
+      }
+
+      .dashboard-header h2 {
+        font-size: 1.4rem;
+      }
+
+      .dashboard-main {
+        padding: 1.8rem 1.2rem;
+      }
+
+      .dashboard-welcome {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+      }
+
+      .dashboard-welcome h3 {
+        font-size: 1.6rem;
+      }
+
+      .nav-grid {
+        grid-template-columns: repeat(5, minmax(220px, 1fr));
+        gap: 1.2rem;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .nav-card {
+        min-width: 220px;
+        max-width: 260px;
+      }
+
+      .nav-card {
+        padding: 1.8rem;
+      }
+
+      .logout-btn {
+        width: 100%;
+        text-align: center;
+        padding: 0.8rem 1.5rem;
+      }
+
+      .dashboard-nav h4 {
+        font-size: 1.2rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -549,23 +836,45 @@
 
   <!-- After Login - Main App -->
   <div id="mainApp">
-    <header style="background:var(--primary);color:white;padding:1rem;text-align:center;">
+    <header class="dashboard-header">
       <h2>📌 CampusLost Dashboard</h2>
-      <button onclick="logout()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:0.5rem 1rem;border-radius:5px;cursor:pointer;float:right;margin-top:-5px;">Logout</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
     </header>
-    <main style="padding:1.5rem;">
-      <h3>Welcome to CampusLost!</h3>
-      <p>This is your lost & found portal. You can post lost/found items here.</p>
+    <main class="dashboard-main">
+      <div class="dashboard-welcome">
+        <h3>Welcome to CampusLost!</h3>
+        <p>This is your lost & found portal. You can post lost/found items, view all items, and manage claims here.</p>
+      </div>
 
-      <!-- Simple Navigation Links for Testing -->
-      <div style="margin-top:2rem;">
-        <h4>Test Pages:</h4>
-        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
-          <a href="post-item.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Post Lost Item</a>
-          <a href="found-items.html" style="background:var(--secondary);color:black;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Report Found Item</a>
-          <a href="all-items.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">View All Items</a>
-          <a href="verify-claim.html" style="background:var(--secondary);color:black;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Verify Claim</a>
-          <a href="dashboard.html" style="background:var(--primary);color:white;padding:0.7rem 1rem;border-radius:5px;text-decoration:none;">Dashboard 2</a>
+      <!-- Navigation Cards -->
+      <div class="dashboard-nav">
+        <h4>Quick Actions</h4>
+        <div class="nav-grid">
+          <a href="post-item.html" class="nav-card">
+            <div class="nav-card-icon">🔍</div>
+            <h5 class="nav-card-title">Post Lost Item</h5>
+            <p class="nav-card-desc">Report an item you've lost on campus</p>
+          </a>
+          <a href="found-items.html" class="nav-card">
+            <div class="nav-card-icon">✅</div>
+            <h5 class="nav-card-title">Report Found Item</h5>
+            <p class="nav-card-desc">Report an item you found on campus</p>
+          </a>
+          <a href="all-items.html" class="nav-card">
+            <div class="nav-card-icon">📋</div>
+            <h5 class="nav-card-title">View All Items</h5>
+            <p class="nav-card-desc">Browse all lost and found items</p>
+          </a>
+          <a href="verify-claim.html" class="nav-card">
+            <div class="nav-card-icon">🔐</div>
+            <h5 class="nav-card-title">Verify Claim</h5>
+            <p class="nav-card-desc">Verify and process item claims</p>
+          </a>
+          <a href="dashboard.html" class="nav-card">
+            <div class="nav-card-icon">📊</div>
+            <h5 class="nav-card-title">Advanced Dashboard</h5>
+            <p class="nav-card-desc">View detailed analytics and reports</p>
+          </a>
         </div>
       </div>
     </main>
