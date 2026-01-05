@@ -46,7 +46,8 @@
         content: "";
         position: fixed;
         inset: 0;
-        background-image: url("bg1.jpg");
+        /* use the project's Frontview image (spaces preserved) */
+        background-image: url("Frontview 2023.jpg");
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -488,12 +489,12 @@
             }
         }
 
-        // Load items when page loads
+
         window.addEventListener('DOMContentLoaded', function() {
             loadItems();
         });
 
-        // Add enter key support for search
+
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchItems();
